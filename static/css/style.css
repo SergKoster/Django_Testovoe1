@@ -1,0 +1,8 @@
+.ad-image {
+  max-width: 200px;  
+  max-height: 100px;  
+  width: auto;        /* сохраняем пропорции */
+  height: auto;
+  display: block;     /* чтобы margin-ы работали корректно */
+  margin-bottom: 1em;
+}

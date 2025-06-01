@@ -1,0 +1,81 @@
+{# templates/ads/proposal_list.html #}
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Список предложений обмена</h2>
+
+  <form method="get" style="margin-bottom: 1em;">
+    <input type="text" name="sender" placeholder="ID отправителя" value="{{ sender }}">
+    <input type="text" name="receiver" placeholder="ID получателя" value="{{ receiver }}">
+
+    <select name="status">
+      <option value="" {% if not status %}selected{% endif %}>Любой статус</option>
+      <option value="pending" {% if status == 'pending' %}selected{% endif %}>Ожидает</option>
+      <option value="accepted" {% if status == 'accepted' %}selected{% endif %}>Принята</option>
+      <option value="rejected" {% if status == 'rejected' %}selected{% endif %}>Отклонена</option>
+    </select>
+
+    <button type="submit">Фильтровать</button>
+  </form>
+
+  <table>{% for prop in page_obj %}
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Предложение</th>
+        <th>За</th>
+        <th>Комментарий</th>
+        <th>Статус</th>
+        <th>Дата создания</th>
+        <th>Кому предлагают</th>
+        <th>Кто предлагает</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td>{{ prop.id }}</td>
+          <td>
+            <a href="{% url 'ad_detail' ad_id=prop.ad_sender.id %}">
+              {{ prop.ad_sender.title }}
+            </a>
+          </td>
+          <td>
+            <a href="{% url 'ad_detail' ad_id=prop.ad_receiver.id %}">
+              {{ prop.ad_receiver.title }}
+            </a>
+          </td>
+          <td>{{ prop.comment|truncatechars:50 }}</td>
+          <td>{{ prop.get_status_display }}</td>
+          <td>{{ prop.created_at|date:"Y-m-d H:i" }}</td>
+          <td>{{ prop.ad_receiver.user.username  }}</td>
+          <td>{{ prop.ad_sender.user.username  }}</td>
+          <td>
+            <a href="{% url 'proposal_detail' proposal_id=prop.id %}">Подробнее</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7">Предложений не найдено.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="pagination" style="margin-top: 1em;">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}&sender={{ sender }}&receiver={{ receiver }}&status={{ status }}">
+        ← Предыдущая
+      </a>
+    {% endif %}
+
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}&sender={{ sender }}&receiver={{ receiver }}&status={{ status }}">
+        Следующая →
+      </a>
+    {% endif %}
+  </div>
+{% endblock %}

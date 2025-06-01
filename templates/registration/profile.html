@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <h2>Профиль пользователя</h2>
+
+  <h3>Данные аккаунта</h3>
+  <form method="post" style="margin-bottom:2em;">
+    {% csrf_token %}
+    {{ profile_form.as_p }}
+    <button type="submit" name="profile_submit">Сохранить профиль</button>
+  </form>
+
+  <h3>Сменить пароль</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ password_form.as_p }}
+    <button type="submit" name="password_submit">Изменить пароль</button>
+  </form>
+{% endblock %}

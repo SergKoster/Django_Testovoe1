@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Удалить предложение обмена</h2>
+  <p>Вы уверены, что хотите удалить это предложение?</p>
+  <ul>
+    <li>Отправитель: {{ proposal.ad_sender.user.username }} — "{{ proposal.ad_sender.title }}"</li>
+    <li>Получатель: {{ proposal.ad_receiver.user.username }} — "{{ proposal.ad_receiver.title }}"</li>
+    <li>Комментарий: {{ proposal.comment }}</li>
+  </ul>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Да, удалить</button>
+  </form>
+  <a href="{% url 'proposal_detail' proposal_id=proposal.id %}">Отмена</a>
+{% endblock %}

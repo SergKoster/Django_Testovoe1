@@ -1,0 +1,28 @@
+{# templates/ads/create_proposal.html #}
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <h2>Предложить обмен</h2>
+
+  <div class="proposal-target" style="margin-bottom:1em;">
+    <h3>{{ ad_receiver.title }}</h3>
+    {% if ad_receiver.image %}
+      <img src="{{ ad_receiver.image.url }}" alt="{{ ad_receiver.title }}" class="ad-image">
+    {% endif %}
+    <p>{{ ad_receiver.description|truncatechars:200 }}</p>
+    <ul>
+      <li><strong>Категория:</strong> {{ ad_receiver.category }}</li>
+      <li><strong>Состояние:</strong> {{ ad_receiver.condition }}</li>
+      <li><strong>Опубликовано:</strong> {{ ad_receiver.created_at|date:"Y-m-d H:i" }}</li>
+    </ul>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Отправить предложение</button>
+  </form>
+
+  <p><a href="{% url 'ad_detail' ad_id=ad_receiver.id %}">← Вернуться к объявлению</a></p>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <h2>Список объявлений</h2>
+
+  <form method="get" style="margin-bottom: 1em;">
+    <input type="text" name="q" placeholder="Поиск..." value="{{ q }}">
+    <input type="text" name="category" placeholder="Категория" value="{{ category }}">
+    <input type="text" name="condition" placeholder="Состояние" value="{{ condition }}">
+    <button type="submit">Искать</button>
+  </form>
+
+  <ul>
+    {% for ad in page_obj %}
+      <li style="margin-bottom: 1em;">
+        <a href="{% url 'ad_detail' ad_id=ad.id %}">{{ ad.title }}</a>
+        {% if ad.image %}
+            <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="ad-image">
+        {% endif %}
+        <small>
+          ({{ ad.category }}, {{ ad.condition }}, {{ ad.created_at|date:"Y-m-d H:i" }})
+        </small>
+        <p>{{ ad.description|truncatechars:100 }}</p>
+      </li>
+    {% empty %}
+      <li>Объявлений не найдено.</li>
+    {% endfor %}
+  </ul>
+
+  <div class="pagination">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}&q={{ q }}&category={{ category }}&condition={{ condition }}">
+        ← Предыдущая
+      </a>
+    {% endif %}
+
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}&q={{ q }}&category={{ category }}&condition={{ condition }}">
+        Следующая →
+      </a>
+    {% endif %}
+  </div>
+{% endblock %}

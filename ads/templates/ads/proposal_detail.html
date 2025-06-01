@@ -1,0 +1,49 @@
+{# templates/ads/proposal_detail.html #}
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Предложение обмена #{{ proposal.id }}</h2>
+
+  <ul>
+    <li>
+      <strong>Отправитель:</strong>
+      <a href="{% url 'ad_detail' ad_id=proposal.ad_sender.id %}">
+        {{ proposal.ad_sender.title }}
+      </a>
+      (пользователь {{ proposal.ad_sender.user.username }})
+    </li>
+    <li>
+      <strong>Получатель:</strong>
+      <a href="{% url 'ad_detail' ad_id=proposal.ad_receiver.id %}">
+        {{ proposal.ad_receiver.title }}
+      </a>
+      (пользователь {{ proposal.ad_receiver.user.username }})
+    </li>
+    <li><strong>Комментарий:</strong> {{ proposal.comment }}</li>
+    <li><strong>Статус:</strong> {{ proposal.get_status_display }}</li>
+    <li><strong>Дата создания:</strong> {{ proposal.created_at|date:"Y-m-d H:i" }}</li>
+  </ul>
+
+  {% if request.user == proposal.ad_receiver.user and proposal.status == 'pending' %}
+  <h3>Действия с предложением</h3>
+  <form action="{% url 'update_proposal' proposal_id=proposal.id new_status='accepted' %}"
+        method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit">Принять</button>
+  </form>
+  <form action="{% url 'update_proposal' proposal_id=proposal.id new_status='rejected' %}"
+        method="post" style="display:inline; margin-left:1em;">
+    {% csrf_token %}
+    <button type="submit">Отклонить</button>
+  </form>
+    {% endif %}
+
+    {% if request.user == proposal.ad_sender.user %}
+  <form action="{% url 'delete_proposal' proposal_id=proposal.id %}" method="post" style="display:inline; margin-left:1em;">
+    {% csrf_token %}
+    <button type="submit">Удалить предложение</button>
+  </form>
+    {% endif %}
+
+  <p><a href="{% url 'proposal_list' %}">← Вернуться к списку предложений</a></p>
+{% endblock %}

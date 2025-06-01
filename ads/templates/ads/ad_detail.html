@@ -1,0 +1,37 @@
+{# templates/ads/ad_detail.html #}
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <h2>{{ ad.title }}</h2>
+
+  {% if ad.image %}
+    <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="ad-image">
+  {% endif %}
+
+  <p>{{ ad.description }}</p>
+
+  <ul>
+    <li><strong>Категория:</strong> {{ ad.category }}</li>
+    <li><strong>Состояние:</strong> {{ ad.condition }}</li>
+    <li><strong>Опубликовано:</strong> {{ ad.created_at|date:"Y-m-d H:i" }}</li>
+    <li><strong>Автор:</strong> {{ ad.user.username }}</li>
+  </ul>
+
+  {% if request.user.is_authenticated %}
+    {% if request.user == ad.user %}
+      <p>
+        <a href="{% url 'edit_ad' ad_id=ad.id %}">Редактировать</a> |
+        <a href="{% url 'delete_ad' ad_id=ad.id %}">Удалить</a>
+      </p>
+    {% else %}
+      <p>
+        <a href="{% url 'create_proposal' ad_receiver_id=ad.id %}" class="button">
+          Предложить обмен
+        </a>
+      </p>
+    {% endif %}
+  {% endif %}
+
+  <p><a href="{% url 'ad_list' %}">← Вернуться к списку объявлений</a></p>
+{% endblock %}
